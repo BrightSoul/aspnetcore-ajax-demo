@@ -1,0 +1,70 @@
+﻿@model ProductSearchInputModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    <h1>Ricerca prodotti</h1>
+    <p>Digita un testo o seleziona la categoria, poi clicca il bottone per cercare i prodotti. La ricerca verrà inviata via ajax, perciò la pagina corrente non si ricaricherà.</p>
+    <form class="form-inline" asp-action="Search" method="get" onsubmit="return sendFormWithAjax(this);">
+        <label>Descizione</label>
+        <input type="text" class="form-control mr-3 ml-1" asp-for="Search" placeholder="Es. Carota">
+        <label>Categoria</label>
+        <select class="form-control mr-3 ml-1" asp-for="Category">
+            <option></option>
+            <option>Frutta</option>
+            <option>Verdura</option>
+        </select>
+        <button class="btn btn-primary">Cerca</button>
+    </form>
+
+    <div id="results">
+    </div>
+</div>
+@section Scripts
+{
+        <script id="products-template" type="text/x-handlebars-template">
+        <h2 class="mt-3">Risultati ({{results.length}})</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Descrizione</th>
+                    <th>Categoria</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each results}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td>{{description}}</td>
+                    <td>{{category}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </script>
+
+    <script>
+        //Uso Handlebars per crearmi un template HTML che poi unirò ai dati restituiti dal server
+        var productsTemplate = Handlebars.compile($("#products-template").html());
+
+        function sendFormWithAjax(form) {
+            form = $(form);
+            //Invio una richiesta ajax al server, in modo che la pagina corrente non debba ricaricarsi
+            $.ajax({
+                method: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize()
+            }).then(function(data) {
+                //Ho ricevuto i dati JSON dal server
+                //Li unisco a un template Handlebars
+                var mergedDataAndHtml = productsTemplate(data);
+                //Così ottengo dinamicamente l'HTML da mostrare nella pagina
+                $("#results").html(mergedDataAndHtml);
+            });
+            //Inibisco il submit del form perché la richiesta al server ormai è stata inviata con ajax
+            return false;
+        }
+    </script>
+}
