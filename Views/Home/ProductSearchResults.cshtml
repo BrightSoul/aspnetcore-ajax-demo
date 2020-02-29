@@ -1,0 +1,26 @@
+@model ProductSearchResultViewModel
+@{
+    //Non serve un layout. Questo è un pezzo di HTML che verrà incastonato
+    //all'interno di una pagina che già contiene un layout
+    Layout = null;
+}
+<h2 class="mt-3">Risultati (@Model.Results.Count())</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Descrizione</th>
+            <th>Categoria</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(ProductViewModel product in Model.Results)
+        {
+        <tr>
+            <td>@product.Id</td>
+            <td>@product.Description</td>
+            <td>@product.Category</td>
+        </tr>
+        }
+    </tbody>
+</table>

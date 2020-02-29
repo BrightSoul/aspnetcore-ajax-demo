@@ -18,7 +18,7 @@ namespace formajax.Controllers
             {
                 Results = productService.Search(inputModel)
             }; 
-            return Json(result);
+            return View("ProductSearchResults", result);
         }
     }
 }
